@@ -3,22 +3,25 @@ const ctx = canvas.getContext('2d');
 
 const player = {
     x: canvas.width / 2,
-    y: canvas.height - 30,
+    y: canvas.height - 50, // Adjusted the initial position closer to the bottom
     width: 50,
     height: 50,
     image: new Image(),
     speed: 50,
 };
 
-player.image.src = 'racoon.png'; // Set the path to the raccoon image
+player.image.src = 'racoon.png';
 
 const fallingObjects = [];
-const objectSize = 40; // Increased size for the falling objects
+const objectSize = 40;
 const objectImage = new Image();
-objectImage.src = 'trash.png'; // Set the path to the trash image
+objectImage.src = 'trash.png';
 const objectSpeed = 4;
 let score = 0;
 let isPaused = false;
+
+let spawnInterval = 1000;
+let lastSpawnTime = 0;
 
 function setCanvasSize() {
     canvas.width = window.innerWidth;
@@ -73,7 +76,6 @@ function moveObjects() {
             object.x + objectSize / 2 > player.x - player.width / 2 &&
             object.x - objectSize / 2 < player.x + player.width / 2
         ) {
-            // Check if the object is entirely above the player
             if (object.y - objectSize / 2 < player.y - player.height / 2) {
                 removeObject(object);
                 increaseScore();
@@ -132,20 +134,26 @@ function updateGame() {
         moveObjects();
         drawGame();
         requestAnimationFrame(updateGame);
+
+        const currentTime = new Date().getTime();
+        if (currentTime - lastSpawnTime > spawnInterval) {
+            generateObject();
+            lastSpawnTime = currentTime;
+            spawnInterval = Math.max(500, spawnInterval - 20);
+        }
     }
 }
 
 function init() {
     setCanvasSize();
     handleInput();
-    setInterval(generateObject, 1000);
+    updateScoreDisplay();
     updateGame();
 }
 
 // Initialize the game
 init();
 
-// Pause button functionality
 const pauseButton = document.getElementById('pauseButton');
 pauseButton.addEventListener('click', togglePause);
 
@@ -159,5 +167,4 @@ function togglePause() {
     }
 }
 
-// Adjust canvas size on window resize
 window.addEventListener('resize', setCanvasSize);
