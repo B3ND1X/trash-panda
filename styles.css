@@ -3,38 +3,16 @@ body {
     overflow: hidden;
 }
 
-#background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 200%;
-    background: url('road.png') no-repeat center center fixed;
-    background-size: cover;
-    animation: scrollBackground 10s linear infinite;
-}
-
-@keyframes scrollBackground {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 0 100%;
-    }
-}
-
-#gameCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+canvas {
+    display: block;
 }
 
 #scoreDisplay {
     position: absolute;
     top: 10px;
     left: 10px;
-    font-size: 27px;
-    color: red;
+    font-size: 18px;
+    color: black;
 }
 
 #pauseButton {

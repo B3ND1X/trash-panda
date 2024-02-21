@@ -3,25 +3,22 @@ const ctx = canvas.getContext('2d');
 
 const player = {
     x: canvas.width / 2,
-    y: canvas.height - 50,
+    y: canvas.height - 30,
     width: 50,
     height: 50,
     image: new Image(),
     speed: 50,
 };
 
-player.image.src = 'racoon.png';
+player.image.src = 'racoon.png'; // Set the path to the raccoon image
 
 const fallingObjects = [];
-const objectSize = 40;
+const objectSize = 40; // Increased size for the falling objects
 const objectImage = new Image();
-objectImage.src = 'trash.png';
+objectImage.src = 'trash.png'; // Set the path to the trash image
 const objectSpeed = 4;
 let score = 0;
 let isPaused = false;
-
-let spawnInterval = 1000;
-let lastSpawnTime = 0;
 
 function setCanvasSize() {
     canvas.width = window.innerWidth;
@@ -76,6 +73,7 @@ function moveObjects() {
             object.x + objectSize / 2 > player.x - player.width / 2 &&
             object.x - objectSize / 2 < player.x + player.width / 2
         ) {
+            // Check if the object is entirely above the player
             if (object.y - objectSize / 2 < player.y - player.height / 2) {
                 removeObject(object);
                 increaseScore();
@@ -134,52 +132,32 @@ function updateGame() {
         moveObjects();
         drawGame();
         requestAnimationFrame(updateGame);
-
-        const currentTime = new Date().getTime();
-        if (currentTime - lastSpawnTime > spawnInterval) {
-            generateObject();
-            lastSpawnTime = currentTime;
-            spawnInterval = Math.max(500, spawnInterval - 20);
-        }
     }
 }
 
 function init() {
     setCanvasSize();
     handleInput();
-    updateScoreDisplay();
+    setInterval(generateObject, 1000);
     updateGame();
-    startBackgroundAnimation(); // Added to initialize background animation
-}
-
-function togglePause() {
-    isPaused = !isPaused;
-    if (isPaused) {
-        pauseButton.textContent = 'Resume';
-        stopBackgroundAnimation();
-    } else {
-        pauseButton.textContent = 'Pause';
-        if (!isPaused) {
-            updateGame();
-            startBackgroundAnimation();
-        }
-    }
-}
-
-function stopBackgroundAnimation() {
-    const background = document.getElementById('background');
-    background.style.animation = 'none';
-}
-
-function startBackgroundAnimation() {
-    const background = document.getElementById('background');
-    background.style.animation = 'scrollBackground 10s linear infinite';
 }
 
 // Initialize the game
 init();
 
+// Pause button functionality
 const pauseButton = document.getElementById('pauseButton');
 pauseButton.addEventListener('click', togglePause);
 
+function togglePause() {
+    isPaused = !isPaused;
+    if (isPaused) {
+        pauseButton.textContent = 'Resume';
+    } else {
+        pauseButton.textContent = 'Pause';
+        updateGame();
+    }
+}
+
+// Adjust canvas size on window resize
 window.addEventListener('resize', setCanvasSize);
