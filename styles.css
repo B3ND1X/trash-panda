@@ -1,9 +1,17 @@
 body {
     margin: 0;
     overflow: hidden;
+}
+
+#background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: url('road.png') no-repeat center center fixed;
     background-size: cover;
-    animation: scrollBackground 10s linear infinite;
+    animation: scrollBackground 60s linear infinite;
 }
 
 @keyframes scrollBackground {
@@ -15,16 +23,10 @@ body {
     }
 }
 
-#game-container {
+#gameCanvas {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-canvas {
-    display: block;
 }
 
 #scoreDisplay {

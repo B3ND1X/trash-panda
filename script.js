@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 
 const player = {
     x: canvas.width / 2,
-    y: canvas.height - 50, // Adjusted the initial position closer to the bottom
+    y: canvas.height - 50,
     width: 50,
     height: 50,
     image: new Image(),
@@ -149,6 +149,31 @@ function init() {
     handleInput();
     updateScoreDisplay();
     updateGame();
+    startBackgroundAnimation(); // Added to initialize background animation
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    if (isPaused) {
+        pauseButton.textContent = 'Resume';
+        stopBackgroundAnimation();
+    } else {
+        pauseButton.textContent = 'Pause';
+        if (!isPaused) {
+            updateGame();
+            startBackgroundAnimation();
+        }
+    }
+}
+
+function stopBackgroundAnimation() {
+    const background = document.getElementById('background');
+    background.style.animation = 'none';
+}
+
+function startBackgroundAnimation() {
+    const background = document.getElementById('background');
+    background.style.animation = 'scrollBackground 10s linear infinite';
 }
 
 // Initialize the game
@@ -156,15 +181,5 @@ init();
 
 const pauseButton = document.getElementById('pauseButton');
 pauseButton.addEventListener('click', togglePause);
-
-function togglePause() {
-    isPaused = !isPaused;
-    if (isPaused) {
-        pauseButton.textContent = 'Resume';
-    } else {
-        pauseButton.textContent = 'Pause';
-        updateGame();
-    }
-}
 
 window.addEventListener('resize', setCanvasSize);
