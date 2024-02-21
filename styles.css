@@ -1,6 +1,26 @@
 body {
     margin: 0;
     overflow: hidden;
+    background: url('road.png') no-repeat center center fixed;
+    background-size: cover;
+    animation: scrollBackground 10s linear infinite;
+}
+
+@keyframes scrollBackground {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 100%;
+    }
+}
+
+#game-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 canvas {
@@ -11,8 +31,8 @@ canvas {
     position: absolute;
     top: 10px;
     left: 10px;
-    font-size: 18px;
-    color: black;
+    font-size: 27px;
+    color: red;
 }
 
 #pauseButton {
