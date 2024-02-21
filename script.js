@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 
 const player = {
     x: canvas.width / 2,
-    y: canvas.height - 50, // Adjusted the initial position closer to the bottom
+    y: canvas.height - 50,
     width: 50,
     height: 50,
     image: new Image(),
@@ -22,6 +22,50 @@ let isPaused = false;
 
 let spawnInterval = 1000;
 let lastSpawnTime = 0;
+
+// Add audio elements
+const collisionSound = new Audio('collision.mp3');
+const movementSound = new Audio('movement.mp3');
+let isMuted = false;
+
+function playMovementSound() {
+    if (!isMuted) {
+        console.log('Playing movement sound');
+        movementSound.currentTime = 0;
+        movementSound.play();
+    }
+}
+
+function playCollisionSound() {
+    if (!isMuted) {
+        console.log('Playing collision sound');
+        collisionSound.currentTime = 0;
+        collisionSound.play();
+    }
+}
+
+function muteAudio() {
+    isMuted = true;
+}
+
+function unmuteAudio() {
+    isMuted = false;
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    const muteButton = document.getElementById('muteToggle');
+    
+    if (isMuted) {
+        muteAudio();
+        muteButton.textContent = 'Unmute Sound';
+        console.log('Audio muted');
+    } else {
+        unmuteAudio();
+        muteButton.textContent = 'Mute Sound';
+        console.log('Audio unmuted');
+    }
+}
 
 function setCanvasSize() {
     canvas.width = window.innerWidth;
@@ -57,6 +101,8 @@ function handleTouchStart(event) {
 }
 
 function movePlayer(direction) {
+    playMovementSound(); // Play the movement sound
+
     if (direction === 'left') {
         player.x -= player.speed;
     } else if (direction === 'right') {
@@ -91,6 +137,7 @@ function moveObjects() {
 function increaseScore() {
     score += 1;
     updateScoreDisplay();
+    playCollisionSound();
 }
 
 function updateScoreDisplay() {
@@ -154,17 +201,20 @@ function init() {
 // Initialize the game
 init();
 
-const pauseButton = document.getElementById('pauseButton');
-pauseButton.addEventListener('click', togglePause);
-
 function togglePause() {
     isPaused = !isPaused;
-    if (isPaused) {
-        pauseButton.textContent = 'Resume';
-    } else {
-        pauseButton.textContent = 'Pause';
+    const pauseButton = document.getElementById('pauseButton');
+    pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+    if (!isPaused) {
         updateGame();
     }
 }
+
+// Add event listener for the mute/unmute toggle button
+const muteToggle = document.getElementById('muteToggle');
+muteToggle.addEventListener('click', toggleMute);
+
+const pauseButton = document.getElementById('pauseButton');
+pauseButton.addEventListener('click', togglePause);
 
 window.addEventListener('resize', setCanvasSize);
