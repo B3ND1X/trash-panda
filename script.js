@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 
 const player = {
     x: canvas.width / 2,
-    y: canvas.height - 50,
+    y: canvas.height - -350,
     width: 50,
     height: 50,
     image: new Image(),
