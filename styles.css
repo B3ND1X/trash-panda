@@ -8,10 +8,10 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 200%;
     background: url('road.png') no-repeat center center fixed;
     background-size: cover;
-    animation: scrollBackground 60s linear infinite;
+    animation: scrollBackground 10s linear infinite;
 }
 
 @keyframes scrollBackground {
