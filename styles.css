@@ -35,31 +35,37 @@ canvas {
     color: red;
 }
 
-#pauseButton {
+#pauseButton,
+#muteToggle {
     position: absolute;
-    top: 10px;
-    right: 150px;
     font-size: 16px;
     cursor: pointer;
     z-index: 2;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#pauseButton {
+    top: 10px;
+    right: 150px;
+    background-color: #2196F3; /* Blue color */
+    color: white;
 }
 
 #muteToggle {
-    position: absolute;
     top: 10px;
     right: 10px;
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #ccc;
-    border: none;
-    border-radius: 5px;
-    z-index: 2;
+    background-color: #4CAF50; /* Green color */
+    color: white;
+}
+
+#pauseButton:hover,
+#muteToggle:hover {
+    background-color: #0b7dda; /* Darker blue color on hover */
 }
 
 #muteToggle:focus {
     outline: none;
 }
 
-#muteToggle:hover {
-    background-color: #bbb;
-}
