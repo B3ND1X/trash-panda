@@ -16,7 +16,10 @@ const fallingObjects = [];
 const objectSize = 40;
 const objectImage = new Image();
 objectImage.src = 'trash.png';
+const enemyImage = new Image();
+enemyImage.src = 'enemy.png'; // Update this line to use the correct filename
 const objectSpeed = 4;
+const enemySpeed = 6;
 let score = 0;
 let isPaused = false;
 
@@ -26,7 +29,11 @@ let lastSpawnTime = 0;
 // Add audio elements
 const collisionSound = new Audio('collision.mp3');
 const movementSound = new Audio('movement.mp3');
+const caughtSound = new Audio('caught.mp3');
 let isMuted = false;
+
+let baseObjectSpeed = 4; // Original speed
+let baseEnemyProbability = 0.1; // Original probability of spawning an enemy
 
 function playMovementSound() {
     if (!isMuted) {
@@ -41,6 +48,14 @@ function playCollisionSound() {
         console.log('Playing collision sound');
         collisionSound.currentTime = 0;
         collisionSound.play();
+    }
+}
+
+function playCaughtSound() {
+    if (!isMuted) {
+        console.log('Playing caught sound');
+        caughtSound.currentTime = 0;
+        caughtSound.play();
     }
 }
 
@@ -114,7 +129,8 @@ function movePlayer(direction) {
 
 function moveObjects() {
     fallingObjects.forEach(object => {
-        object.y += objectSpeed;
+        const speed = object.isEnemy ? enemySpeed : baseObjectSpeed;
+        object.y += speed;
 
         if (
             object.y + objectSize / 2 > player.y - player.height / 2 &&
@@ -123,8 +139,12 @@ function moveObjects() {
             object.x - objectSize / 2 < player.x + player.width / 2
         ) {
             if (object.y - objectSize / 2 < player.y - player.height / 2) {
-                removeObject(object);
-                increaseScore();
+                if (object.isEnemy) {
+                    handleGameover();
+                } else {
+                    removeObject(object);
+                    increaseScore();
+                }
             }
         }
 
@@ -153,10 +173,24 @@ function removeObject(object) {
 }
 
 function generateObject() {
+    let isEnemy = Math.random() < baseEnemyProbability;
+    
+    // Increase enemy probability over time
+    if (baseEnemyProbability < 0.5) {
+        baseEnemyProbability += 0.001; // Adjust the rate at which enemy probability increases
+    }
+
+    // Increase object speed over time
+    if (baseObjectSpeed < 15) {
+        baseObjectSpeed += 0.005; // Adjust the rate at which object speed increases
+    }
+
     const object = {
         x: Math.random() * canvas.width,
         y: 0,
+        isEnemy: isEnemy,
     };
+
     fallingObjects.push(object);
 }
 
@@ -166,7 +200,9 @@ function drawPlayer() {
 
 function drawObjects() {
     fallingObjects.forEach(object => {
-        ctx.drawImage(objectImage, object.x - objectSize / 2, object.y - objectSize / 2, objectSize, objectSize);
+        const imageToDraw = object.isEnemy ? enemyImage : objectImage;
+        const sizeToUse = object.isEnemy ? objectSize : objectSize;
+        ctx.drawImage(imageToDraw, object.x - sizeToUse / 2, object.y - sizeToUse / 2, sizeToUse, sizeToUse);
     });
 }
 
@@ -208,6 +244,21 @@ function togglePause() {
     if (!isPaused) {
         updateGame();
     }
+}
+
+function handleGameover() {
+    playCaughtSound();
+    alert('YOU WERE CAUGHT! GAME OVER!');
+    resetGame();
+}
+
+function resetGame() {
+    fallingObjects.length = 0;
+    baseObjectSpeed = 4;
+    baseEnemyProbability = 0.1;
+    score = 0;
+    updateScoreDisplay();
+    isPaused = false;
 }
 
 // Add event listener for the mute/unmute toggle button
